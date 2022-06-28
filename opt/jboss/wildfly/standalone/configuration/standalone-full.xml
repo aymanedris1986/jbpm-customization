@@ -42,6 +42,12 @@
         <extension module="org.wildfly.extension.undertow"/>
         <extension module="org.wildfly.iiop-openjdk"/>
     </extensions>
+    <system-properties>
+        <property name="org.kie.server.user" value="myuser"/>
+        <property name="org.kie.server.pwd" value="myuserpasswd"/>
+        <property name="org.kie.server.controller.user" value="myuser"/>
+        <property name="org.kie.server.controller.pwd" value="myuserpasswd"/>
+    </system-properties>
     <management>
         <security-realms>
             <security-realm name="ManagementRealm">
@@ -162,10 +168,22 @@
                         <password>sa</password>
                     </security>
                 </datasource>
+			    <datasource jta="true" jndi-name="java:jboss/datasources/jbpmDS" pool-name="jbpmDS" enabled="true" use-java-context="true" use-ccm="true">
+				    <connection-url>jdbc:postgresql://10.3.2.44:5432/jbpm</connection-url>
+				    <driver>postgresql</driver>
+				    <security>
+					    <user-name>jbpm</user-name>
+					    <password>jbpm</password>
+				    </security>
+			    </datasource>
                 <drivers>
                     <driver name="h2" module="com.h2database.h2">
                         <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
                     </driver>
+                    <driver name="postgresql" module="org.postgresql">
+						<xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
+					</driver>
+                </drivers>
                 </drivers>
             </datasources>
         </subsystem>
@@ -496,6 +514,11 @@
                         </login-module>
                         <login-module code="RealmDirect" flag="required">
                             <module-option name="password-stacking" value="useFirstPass"/>
+                        </login-module>
+                        <login-module code="org.jboss.security.auth.spi.DatabaseServerLoginModule" flag="required">
+                            <module-option name="dsJndiName" value="java:jboss/datasources/jbpmDS"/>
+                            <module-option name="principalsQuery" value="select passwd from Users username where username=?"/>
+                            <module-option name="rolesQuery" value="select userRoles, 'Roles' from UserRoles where username=?"/>
                         </login-module>
                     </authentication>
                 </security-domain>
