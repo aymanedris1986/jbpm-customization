@@ -41,26 +41,26 @@
         <extension module="org.wildfly.extension.undertow"/>
     </extensions>
     <system-properties>
-        <property name="org.kie.server.controller" value="http://localhost:8080/business-central/rest/controller"/>
         <property name="org.jbpm.casemgmt.showcase.url" value="/jbpm-casemgmt"/>
         <property name="org.jbpm.ht.admin.group" value="process-admin"/>
         <property name="org.jbpm.task.cleanup.enabled" value="false"/>
         <property name="org.kie.server.persistence.ds" value="java:jboss/datasources/jBPMDS"/>
         <property name="appformer.experimental.features" value="true"/>
         <property name="org.kie.prometheus.server.ext.disabled" value="false"/>
-        <property name="kie.keystore.keyStoreURL" value="file:///${jboss.server.config.dir}/jBPMKeystore.jceks"/>
+        <!-- <property name="kie.keystore.keyStoreURL" value="file:///${jboss.server.config.dir}/jBPMKeystore.jceks"/>
         <property name="kie.keystore.keyStorePwd" value="jBPMKeyStorePassword"/>
         <property name="kie.keystore.key.server.alias" value="jBPMAlias"/>
         <property name="kie.keystore.key.server.pwd" value="jBPMKeyPassword"/>
         <property name="kie.keystore.key.ctrl.alias" value="jBPMAlias"/>
-        <property name="kie.keystore.key.ctrl.pwd" value="jBPMKeyPassword"/>
+        <property name="kie.keystore.key.ctrl.pwd" value="jBPMKeyPassword"/> -->
+        <property name="org.kie.server.user" value="admin"/>
+        <property name="org.kie.server.pwd" value="admin"/>
+        <property name="org.kie.server.controller.user" value="admin"/>
+        <property name="org.kie.server.controller.pwd" value="admin"/>
         <property name="org.kie.server.persistence.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
         <property name="org.kie.server.id" value="sample-server"/>
         <property name="org.kie.server.location" value="http://localhost:8080/kie-server/services/rest/server"/>
-        <property name="org.kie.server.user" value="aymanedris"/>
-        <property name="org.kie.server.pwd" value="123456"/>
-        <property name="org.kie.server.controller.user" value="aymanedris"/>
-        <property name="org.kie.server.controller.pwd" value="123456"/>
+        <property name="org.kie.server.controller" value="http://localhost:8080/business-central/rest/controller"/>
     </system-properties>
     <management>
         <security-realms>
@@ -492,7 +492,7 @@
                             <module-option name="rolesQuery" value="select userRoles, 'Roles' from UserRoles where username=?"/>
                         </login-module>
                         <login-module code="org.kie.security.jaas.KieLoginModule" flag="optional" module="deployment.business-central.war"/>
-                        <login-module code="org.kie.security.jaas.KieLoginModule" flag="optional" module="deployment.jbpm-casemgmt.war"/>
+                        <!-- <login-module code="org.kie.security.jaas.KieLoginModule" flag="optional" module="deployment.jbpm-casemgmt.war"/> -->
                 </authentication>
                 </security-domain>                
                 <security-domain name="jboss-web-policy" cache-type="default">
