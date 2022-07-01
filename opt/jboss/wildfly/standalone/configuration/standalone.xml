@@ -47,12 +47,6 @@
         <property name="org.kie.server.persistence.ds" value="java:jboss/datasources/jBPMDS"/>
         <property name="appformer.experimental.features" value="true"/>
         <property name="org.kie.prometheus.server.ext.disabled" value="false"/>
-        <!-- <property name="kie.keystore.keyStoreURL" value="file:///${jboss.server.config.dir}/jBPMKeystore.jceks"/>
-        <property name="kie.keystore.keyStorePwd" value="jBPMKeyStorePassword"/>
-        <property name="kie.keystore.key.server.alias" value="jBPMAlias"/>
-        <property name="kie.keystore.key.server.pwd" value="jBPMKeyPassword"/>
-        <property name="kie.keystore.key.ctrl.alias" value="jBPMAlias"/>
-        <property name="kie.keystore.key.ctrl.pwd" value="jBPMKeyPassword"/> -->
         <property name="org.kie.server.user" value="admin"/>
         <property name="org.kie.server.pwd" value="admin"/>
         <property name="org.kie.server.controller.user" value="admin"/>
@@ -174,7 +168,7 @@
                 </datasource>
                 <xa-datasource jndi-name="java:jboss/datasources/jBPMDS" pool-name="jBPMXADS">
                     <xa-datasource-property name="ServerName">
-                        10.3.2.44
+                        my_postgres_container
                     </xa-datasource-property>
                     <xa-datasource-property name="PortNumber">
                         5432
@@ -197,7 +191,7 @@
                     </validation>
                 </xa-datasource>
                 <datasource jta="true" jndi-name="java:jboss/datasources/usersDs" pool-name="usersDs" enabled="true" use-java-context="true" use-ccm="true">
-				    <connection-url>jdbc:postgresql://10.3.2.44:5432/jbpm</connection-url>
+				    <connection-url>jdbc:postgresql://my_postgres_container:5432/jbpm</connection-url>
 				    <driver>postgres</driver>
 				    <security>
 					    <user-name>jbpm</user-name>
@@ -481,20 +475,25 @@
         <subsystem xmlns="urn:jboss:domain:sar:1.0"/>
         <subsystem xmlns="urn:jboss:domain:security:2.0">
             <security-domains>
-            <security-domain name="dbdomain" cache-type="default">
-                <authentication>
+                <security-domain name="other-old" cache-type="default">
+                    <authentication>
                         <login-module code="Remoting" flag="optional">
                             <module-option name="password-stacking" value="useFirstPass"/>
                         </login-module>
+                        <login-module code="RealmDirect" flag="required">
+                            <module-option name="password-stacking" value="useFirstPass"/>
+                        </login-module>
+                    </authentication>
+                </security-domain>
+                <security-domain name="dbdomain" cache-type="default">
+                    <authentication>
                         <login-module code="Database" flag="required">
                             <module-option name="dsJndiName" value="java:jboss/datasources/usersDs"/>
                             <module-option name="principalsQuery" value="select passwd from Users username where username=?"/>
                             <module-option name="rolesQuery" value="select userRoles, 'Roles' from UserRoles where username=?"/>
                         </login-module>
-                        <login-module code="org.kie.security.jaas.KieLoginModule" flag="optional" module="deployment.business-central.war"/>
-                        <!-- <login-module code="org.kie.security.jaas.KieLoginModule" flag="optional" module="deployment.jbpm-casemgmt.war"/> -->
-                </authentication>
-                </security-domain>                
+                    </authentication>
+                </security-domain>  
                 <security-domain name="jboss-web-policy" cache-type="default">
                     <authorization>
                         <policy-module code="Delegating" flag="required"/>
