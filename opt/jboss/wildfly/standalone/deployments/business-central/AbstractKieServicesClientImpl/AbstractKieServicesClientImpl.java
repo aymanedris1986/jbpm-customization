@@ -273,12 +273,11 @@ public abstract class AbstractKieServicesClientImpl {
     }
 
     protected <T> T makeHttpPostRequestAndCreateCustomResponse(String uri, Object bodyObject, Class<T> resultType) {
-        Map map =  new HashMap();
-        map.put("Authorization", "Basic YWRtaW46YWRtaW4=");
-        return (T) this.makeHttpPostRequestAndCreateCustomResponse(uri, (String)this.serialize(bodyObject), resultType, map);
+        return (T) this.makeHttpPostRequestAndCreateCustomResponse(uri, (String)this.serialize(bodyObject), resultType, new HashMap());
     }
 
-    protected <T> T makeHttpPostRequestAndCreateCustomResponse(String uri, final String body, Class<T> resultType, final Map<String, String> headers) {
+    protected <T> T makeHttpPostRequestAndCreateCustomResponse(String uri, final String body, Class<T> resultType,Map<String, String> headers) {
+        headers.put("Authorization", "Basic YWRtaW46YWRtaW4=");
         KieServerHttpRequest request = this.invoke(uri, new RemoteHttpOperation() {
             public KieServerHttpRequest doOperation(String url) {
                 AbstractKieServicesClientImpl.logger.debug("About to send POST request to '{}' with payload '{}'", url, body);
@@ -396,7 +395,7 @@ public abstract class AbstractKieServicesClientImpl {
         if (this.owner.getConversationId() != null) {
             httpRequest.header("X-KIE-ConversationId", this.owner.getConversationId());
         }
-
+        httpRequest.header("Authorization", "Basic YWRtaW46YWRtaW4=");
         return httpRequest;
     }
 
